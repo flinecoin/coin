@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Fline
+Comment=Fline P2P Cryptocurrency
+Comment[fr]=Fline, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Fline, eşten eşe kriptografik sanal para birimi
+Exec=fline-qt %u
+Terminal=false
+Type=Application
+Icon=fline128
+MimeType=x-scheme-handler/fline;
+Categories=Office;Finance;

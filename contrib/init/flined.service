@@ -1,0 +1,26 @@
+[Unit]
+Description=fline's distributed currency daemon
+After=network.target
+
+[Service]
+User=fline
+Group=fline
+
+Type=forking
+PIDFile=/var/lib/flined/flined.pid
+
+ExecStart=/usr/bin/flined -daemon -pid=/var/lib/flined/flined.pid \
+          -conf=/etc/fline/fline.conf -datadir=/var/lib/flined
+
+ExecStop=-/usr/bin/fline-cli -conf=/etc/fline/fline.conf \
+         -datadir=/var/lib/flined stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
