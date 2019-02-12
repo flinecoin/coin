@@ -848,11 +848,11 @@ min-width:180px;
 }
 
 QDialog#RPCConsole QWidget#tab_peers QLabel#peerHeading { /* Peers Info Header */
-color:#8c8c8c;
+color:white;
 }
 
 QDialog#RPCConsole QTableView#peerWidget::item { /* Peers Table Items */
-color:#8c8c8c;
+color:white;
 }
 
 QDialog#RPCConsole QTableView#peerWidget::item:selected { /* Peers Table Items */
@@ -875,7 +875,7 @@ QDialog#RPCConsole QTextEdit#messagesWidget { /* Console Messages Window */
 border:0;
 /* background-color: #003326; */
 background-color: qlineargradient(x1: 0, y1: 0, x0: 2, y0: 1, stop: 0 rgba(29,29,29, 0.9), stop: 1  rgba(126,126,126, 0.2));
-color:#8c8c8c;
+color:white;
 }
 
 QDialog#RPCConsole QLineEdit#lineEdit { /* Console Input */

@@ -1,11 +1,11 @@
-Name "Fline Core (32-bit)"
+Name "Fline Core (-bit)"
 
 RequestExecutionLevel highest
 SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0.1
+!define VERSION 1.0.2
 !define COMPANY "Fline Core project"
 !define URL https://www.fline.io
 
@@ -20,7 +20,7 @@ SetCompressor /SOLID lzma
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "Fline Core"
-!define MUI_FINISHPAGE_RUN $INSTDIR\fline-qt.exe
+!define MUI_FINISHPAGE_RUN $INSTDIR\fline-qt
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "/opt/projects/Fline/share/pixmaps/nsis-wizard.bmp"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
@@ -28,7 +28,7 @@ SetCompressor /SOLID lzma
 # Included files
 !include Sections.nsh
 !include MUI2.nsh
-!if "32" == "64"
+!if "" == "64"
 !include x64.nsh
 !endif
 
@@ -48,8 +48,8 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile /opt/projects/Fline/fline-${VERSION}-win32-setup.exe
-!if "32" == "64"
+OutFile /opt/projects/Fline/fline-${VERSION}-win-setup.exe
+!if "" == "64"
 InstallDir $PROGRAMFILES64\Fline
 !else
 InstallDir $PROGRAMFILES\Fline
@@ -73,12 +73,12 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /opt/projects/Fline/release/fline-qt.exe
+    File /opt/projects/Fline/release/fline-qt
     File /oname=COPYING.txt /opt/projects/Fline/COPYING
     File /oname=readme.txt /opt/projects/Fline/doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
-    File /opt/projects/Fline/release/flined.exe
-    File /opt/projects/Fline/release/fline-cli.exe
+    File /opt/projects/Fline/release/flined
+    File /opt/projects/Fline/release/fline-cli
     SetOutPath $INSTDIR\doc
     File /r /opt/projects/Fline/doc\*.*
     SetOutPath $INSTDIR
@@ -91,8 +91,8 @@ Section -post SEC0001
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\fline-qt.exe
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Fline Core (testnet, 32-bit).lnk" "$INSTDIR\fline-qt.exe" "-testnet" "$INSTDIR\fline-qt.exe" 1
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\fline-qt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Fline Core (testnet, -bit).lnk" "$INSTDIR\fline-qt" "-testnet" "$INSTDIR\fline-qt" 1
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -105,8 +105,8 @@ Section -post SEC0001
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     WriteRegStr HKCR "fline" "URL Protocol" ""
     WriteRegStr HKCR "fline" "" "URL:Fline"
-    WriteRegStr HKCR "fline\DefaultIcon" "" $INSTDIR\fline-qt.exe
-    WriteRegStr HKCR "fline\shell\open\command" "" '"$INSTDIR\fline-qt.exe" "%1"'
+    WriteRegStr HKCR "fline\DefaultIcon" "" $INSTDIR\fline-qt
+    WriteRegStr HKCR "fline\shell\open\command" "" '"$INSTDIR\fline-qt" "%1"'
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -124,7 +124,7 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\fline-qt.exe
+    Delete /REBOOTOK $INSTDIR\fline-qt
     Delete /REBOOTOK $INSTDIR\COPYING.txt
     Delete /REBOOTOK $INSTDIR\readme.txt
     RMDir /r /REBOOTOK $INSTDIR\daemon
@@ -136,7 +136,7 @@ Section -un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Fline Core (testnet, 32-bit).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Fline Core (testnet, -bit).lnk"
     Delete /REBOOTOK "$SMSTARTUP\Fline.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     Delete /REBOOTOK $INSTDIR\debug.log
@@ -158,7 +158,7 @@ SectionEnd
 # Installer functions
 Function .onInit
     InitPluginsDir
-!if "32" == "64"
+!if "" == "64"
     ${If} ${RunningX64}
       ; disable registry redirection (enable access to 64-bit portion of registry)
       SetRegView 64

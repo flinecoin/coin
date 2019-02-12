@@ -3946,11 +3946,18 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             if (block.vtx[i].IsCoinStake())
                 return state.DoS(100, error("CheckBlock() : more than one coinstake"));
                 
-        CTransaction txPrev;
-    		uint256 hashBlockPrev;
         //check for minimal stake input after fork
         
-        if (chainActive.Height() > LIMIT_POS_FORK_HEIGHT) {
+        CBlockIndex* pindex = NULL;
+        CTransaction txPrev;
+    	uint256 hashBlockPrev = block.hashPrevBlock;
+        BlockMap::iterator it = mapBlockIndex.find(hashBlockPrev);
+        if (it != mapBlockIndex.end())
+            pindex = it->second;
+    	else
+            return state.DoS(100, error("CheckBlock() : stake failed to find block index"));
+        
+        if (pindex->nHeight > LIMIT_POS_FORK_HEIGHT+10) { //postpone minimal stake check after fork
             if (!GetTransaction(block.vtx[1].vin[0].prevout.hash, txPrev, hashBlockPrev, true))
       			    return state.DoS(100, error("CheckBlock() : stake failed to find vin transaction"));
             if (txPrev.vout[block.vtx[1].vin[0].prevout.n].nValue < Params().StakeInputMinimal()) {

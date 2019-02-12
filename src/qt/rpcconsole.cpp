@@ -494,11 +494,11 @@ void RPCConsole::clear()
     // Set default style sheet
     ui->messagesWidget->document()->setDefaultStyleSheet(
         "table { }"
-        "td.time { color: #808080; padding-top: 3px; } "
+        "td.time { color: #ffffff; padding-top: 3px; } "
         "td.message { font-family: Courier, Courier New, Lucida Console, monospace; font-size: 12px; } " // Todo: Remove fixed font-size
         "td.cmd-request { color: white; } "
         "td.cmd-error { color: red; } "
-        "b { color: #808080; } ");
+        "b { color: #ffffff; } ");
 
     message(CMD_REPLY, (tr("Welcome to the Fline RPC console.") + "<br>" +
                            tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
