@@ -119,6 +119,7 @@ public:
         nMaturity = 20;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 120000000 * COIN; //120,000,000
+        nStakeInputMinimal = 20 * COIN;
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 800;
@@ -155,6 +156,7 @@ public:
         genesis.nTime = 1549800000;	   // Sunday, February 10, 2019 12:00:00 PM
         genesis.nBits = 0x1e0ffff0;
         genesis.nNonce = 0x280e4;
+        
         
         /*
         printf("Generating genesis block...\n");
@@ -271,6 +273,7 @@ public:
         nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 9891730; //Last valid accumulator checkpoint
+        nStakeInputMinimal = 20 * COIN;
         
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1549800000;	   // Sunday, February 10, 2019 12:00:00 PM
@@ -350,6 +353,7 @@ public:
 
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 51436;
+        nStakeInputMinimal = 20 * COIN;
         //assert(hashGenesisBlock == uint256("0x000008415bdca132b70cf161ecc548e5d0150fd6634a381ee2e99bb8bb77dbb3"));
 
         vFixedSeeds.clear(); //! Testnet mode doesn't have any fixed seeds.
