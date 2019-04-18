@@ -331,14 +331,8 @@ CNodeState* State(NodeId pnode)
 
 int GetHeight()
 {
-    while (true) {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain) {
-            MilliSleep(50);
-            continue;
-        }
-        return chainActive.Height();
-    }
+	//remove lock since sometime it caused deadlocks
+    return chainActive.Height();
 }
 
 void UpdatePreferredDownload(CNode* node, CNodeState* state)
@@ -2148,19 +2142,31 @@ int64_t GetBlockValue(int nHeight)
         nSubsidy = 5 * COIN;
     } else if(nHeight >= 90000 && nHeight < 100000) {
         nSubsidy = 6 * COIN;
-    } else if(nHeight >= 100000 && nHeight < 200000) {
-        nSubsidy = 5 * COIN;
+    } else if(nHeight >= 100000 && nHeight < 120000) {
+        nSubsidy = 3 * COIN;
+    } else if(nHeight >= 120000 && nHeight < 140000) {
+        nSubsidy = 2.7 * COIN;
+    } else if(nHeight >= 140000 && nHeight < 160000) {
+        nSubsidy = 2.4 * COIN;
+    } else if(nHeight >= 160000 && nHeight < 200000) {
+        nSubsidy = 2.1 * COIN;
     } else if(nHeight >= 200000 && nHeight < 250000) {
-        nSubsidy = 4 * COIN;
+        nSubsidy = 1.8 * COIN;
     } else if(nHeight >= 250000 && nHeight < 300000) {
-        nSubsidy = 3.5 * COIN;
-    } else if(nHeight >= 300000 && nHeight < 500000) {
-        nSubsidy = 3.0 * COIN;
+        nSubsidy = 1.5 * COIN;
+    } else if(nHeight >= 300000 && nHeight < 350000) {
+        nSubsidy = 1.2 * COIN;
+    } else if(nHeight >= 350000 && nHeight < 400000) {
+        nSubsidy = 1.0 * COIN;
+    } else if(nHeight >= 400000 && nHeight < 450000) {
+        nSubsidy = 0.75 * COIN;
+    } else if(nHeight >= 450000 && nHeight < 500000) {
+        nSubsidy = 0.5 * COIN;
     }    
     else if(nHeight >= 500000) {
         int nMul = (nHeight-500000)/350000;
         if(nMul < 32)
-			nSubsidy = (3.0 / pow(2,nMul)) * COIN;
+			nSubsidy = (0.5 / pow(2,nMul)) * COIN;
 		else
 			nSubsidy = 0; //down to zero
     } else {
@@ -6344,7 +6350,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-	if(chainActive.Height() >= LIMIT_POS_FORK_HEIGHT)
+	if(chainActive.Height() >= FORK_HEIGHT_103)
         return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     else
 		return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;

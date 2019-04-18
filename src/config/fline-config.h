@@ -21,7 +21,7 @@
 #define CLIENT_VERSION_MINOR 0
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 2
+#define CLIENT_VERSION_REVISION 3
 
 /* Version is release */
 #define COPYRIGHT_YEAR 2019
@@ -274,7 +274,7 @@
 #define PACKAGE_NAME "Fline Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Fline Core 1.0.2"
+#define PACKAGE_STRING "Fline Core 1.0.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "fline"
@@ -283,7 +283,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.0.2"
+#define PACKAGE_VERSION "1.0.3"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
