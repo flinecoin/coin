@@ -4262,52 +4262,50 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     int nHeight = pindex->nHeight;
     
     //fix fake PoS
-    if (block.IsProofOfStake()) {
+ if (block.IsProofOfStake()) {
 		LOCK(cs_main);
 
 		CCoinsViewCache coins(pcoinsTip);
-
-		if (!coins.HaveInputs(block.vtx[1])) {
+		
+		if (!block.vtx[1].IsCoinStake() && !coins.HaveInputs(block.vtx[1])) {
 			// the inputs are spent at the chain tip so we should look at the recently spent outputs
 
 			for (CTxIn in : block.vtx[1].vin) {
 				auto it = mapStakeSpent.find(in.prevout);
-				if (it == mapStakeSpent.end()) {
-					return false;
-				}
 				if (it->second <= pindexPrev->nHeight) {
-					return false;
+					
+					LogPrintf("AccepptBlock: found spent input %s at height %d before height %d\n",(it->first).ToString(), it->second, pindexPrev->nHeight);
+					LogPrintf("block in question: %s\n", block.ToString());
+			
+					return error("Function %s, fake PoS fix - input was already spent\n", __func__);
 				}
 			}
 		}
 
 		// if this is on a fork
-		if (!chainActive.Contains(pindexPrev) && pindexPrev != NULL) {
-			// start at the block we're adding on to
-			CBlockIndex *last = pindexPrev;
+		int nCheckedBlocks = 0;
+
+        bool isBlockFromFork = pindexPrev != nullptr && chainActive.Tip() != pindexPrev;
+        
+        if (isBlockFromFork) {
+			LogPrintf("Function %s, fake PoS fix - found block is not in the active chain\n", __func__);
 
 			//while that block is not on the main chain
-			while (!chainActive.Contains(last) && pindexPrev != NULL) {
-				CBlock bl;
-				ReadBlockFromDisk(bl, last);
-				// loop through every spent input from said block
-				for (CTransaction t: bl.vtx) {
-					for (CTxIn in: t.vin) {
-						// loop through every spent input in the staking transaction of the new block
-						for (CTxIn stakeIn: block.vtx[1].vin) {
-							// if they spend the same input
-							if (stakeIn.prevout == in.prevout) {
-								//reject the block
-								return false;
-							}
-						}
-					}
-				}
-
+			CBlockIndex *last = pindexPrev;
+            while (!chainActive.Contains(last)) {
 				// go to the parent block
-				last = pindexPrev->pprev;
+				last = last->pprev;
+				++nCheckedBlocks;
+				// Check if the forked chain is longer than the max reorg limit
+                if (nCheckedBlocks == Params().MaxReorganizationDepth()) {
+                    // TODO: Remove this chain from disk.
+                    return error("%s: forked chain longer than maximum reorg limit", __func__);
+                }
 			}
+			
+			LogPrintf("%s: fake PoS fix - forked chain found and accepted, number of blocks from split: %d\n", __func__, nCheckedBlocks+1);
 		}
+        
     }
 
     // Write block to history file
